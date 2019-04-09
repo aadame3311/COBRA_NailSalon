@@ -5,7 +5,7 @@ The purpose of this application is to help speed-up the process of sign-ins at n
 
 ## gem requirements
 ```
-gem install sinatra
+bundle install
 ```
 ## run app
 ```
