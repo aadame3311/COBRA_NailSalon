@@ -104,12 +104,21 @@ class Appointment
 
     property :id                , Serial
     property :created_at        , DateTime
-    property :canceled          , Boolean
-    property :completed         , Boolean
 
     belongs_to :customer
     belongs_to :employee
     belongs_to :salon
+
+    has n, :statuses
+end
+
+class Status 
+    include DataMapper::Resource
+
+    property :id                , Serial 
+    property :created_at        , DateTime
+
+    belongs_to :appointment
 end
 
 class Queue 
