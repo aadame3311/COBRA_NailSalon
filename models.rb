@@ -71,7 +71,7 @@ class Service
     has n, :employees
 end
 
-class Employee
+class User
     include DataMapper::Resource
 
     property :id                , Serial    
@@ -83,6 +83,9 @@ class Employee
     property :email             , String    , format: :email_address
     property :pass_code         , String    , required: true, unique_index: true, length: 8
     property :created_at        , DateTime
+    # 1 = employee
+    # 0 = administrator
+    property :role_id           , Integer   , default: 1
     
     has n, :timesheets
     has n, :appointments
