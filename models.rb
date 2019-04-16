@@ -89,7 +89,7 @@ class User
     
     has n, :timesheets
     has n, :appointments
-    belongs_to :service
+    belongs_to :salon
 end
 
 class Timesheet  

@@ -11,4 +11,5 @@ describe User do
     it {should have_property        :pass_code}
     it {should have_property        :created_at}
     it {should have_property        :role_id}
+    it {should have_property        :salon_id}
 end
