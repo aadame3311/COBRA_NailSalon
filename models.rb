@@ -108,8 +108,6 @@ class Appointment
     belongs_to :customer
     belongs_to :employee
     belongs_to :salon
-
-    has n, :statuses
 end
 
 class Status 
