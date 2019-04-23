@@ -21,4 +21,6 @@ end
 
 
 # API # 
-
+namespace '/api/v1' do
+    
+end
