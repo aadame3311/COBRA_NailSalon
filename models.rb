@@ -23,11 +23,10 @@ class Salon
     property :address           , Text      , required: true
     property :phone_number      , Text      , required: true
     property :email             , Text      , format: :email_address
+    property :passcode          , Text      , required: true    , default: '000'
     property :created_at        , DateTime
-    property :passcode          , Text      , required: true
 
     has n, :employees
-    has n, :administrators
     has n, :services
     has n, :customers
     has n, :appointments
@@ -35,20 +34,6 @@ class Salon
     def login(salon_passcode)
         return self.passcode == salon_passcode
     end
-end
-
-class Administrator
-    include DataMapper::Resource
-
-    property :id                , Serial
-    property :first_name        , Text
-    property :middle_name       , Text
-    property :last_name         , Text
-    property :phone_number      , String    , required: true
-    property :emergency_number  , String    , required: true
-    property :email             , String    , format: :email_address
-    property :pass_code         , String    , required: true, unique_index: true, length: 6
-    
 end
 
 class Customer
@@ -76,7 +61,7 @@ class Service
     has n, :employees
 end
 
-class User
+class Employee
     include DataMapper::Resource
 
     property :id                , Serial    
@@ -86,7 +71,7 @@ class User
     property :phone_number      , String    , required: true
     property :emergency_number  , String    , required: true
     property :email             , String    , format: :email_address
-    property :pass_code         , String    , required: true, unique_index: true, length: 8
+    property :passcode         , String    , required: true, unique_index: true, length: 8, default: '000'
     property :created_at        , DateTime
     # 1 = employee
     # 0 = administrator
