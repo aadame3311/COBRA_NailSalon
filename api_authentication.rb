@@ -48,9 +48,9 @@ def current_salon
 end
 
 get "/api/login" do
-	salon_passcode = params['passcode']
+	salon_passcode = params['salon_passcode']
 	if salon_passcode
-		salon = Salon.first(passcode: passcode.downcase)
+		salon = Salon.first(passcode: salon_passcode.downcase)
 
 		if(salon && salon.login(salon_passcode))
 			content_type :json
@@ -60,7 +60,7 @@ get "/api/login" do
 	    	halt 401, {"message": message}.to_json
 		end
 	else
-		message = "Missing salon_passcode"
+		message = "Missing salon_passcode parameter"
 	    halt 401, {"message": message}.to_json
 	end
 end
@@ -69,7 +69,7 @@ post "/api/register" do
     salon_passcode = params['salon_passcode']
     
 	if salon_passcode
-		salon = Salon.first(salon_passcode: salon_passcode.downcase)
+		salon = Salon.first(passcode: salon_passcode.downcase)
 
 		if(salon)
 				halt 422, {"message": "Salon passcode already exists"}.to_json
