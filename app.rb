@@ -110,5 +110,5 @@ namespace '/api/v1' do
   get "/administrator/:pass_code" do
 
   end
-  
+
 end
