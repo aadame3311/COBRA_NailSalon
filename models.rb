@@ -31,6 +31,10 @@ class Salon
     has n, :services
     has n, :customers
     has n, :appointments
+
+    def login(salon_passcode)
+        return self.passcode == salon_passcode
+    end
 end
 
 class Administrator
