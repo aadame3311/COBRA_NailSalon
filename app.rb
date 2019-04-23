@@ -26,7 +26,8 @@ namespace '/api/v1' do
   #SALON
 
   get "/salon/all" do
-
+    salon = Salon.all
+    return salon.to_json
   end
 
   get "/salon/:id" do
