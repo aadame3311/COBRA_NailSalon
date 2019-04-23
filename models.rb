@@ -24,6 +24,7 @@ class Salon
     property :phone_number      , Text      , required: true
     property :email             , Text      , format: :email_address
     property :created_at        , DateTime
+    property :passcode          , Text      , required: true
 
     has n, :employees
     has n, :administrators
