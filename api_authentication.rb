@@ -1,7 +1,7 @@
 require "json"
 require "jwt"
 
-SECRET_KEY = Keys::Tokens['access']
+SECRET_KEY = "lkhalkjelqkjfnasdkjju"
 
 def api_authenticate!
     @api = true
@@ -26,6 +26,8 @@ def api_authenticate!
         halt 401, 'A valid token must be passed.'
     end
 end
+
+
 
 def active_salon
     if @api
