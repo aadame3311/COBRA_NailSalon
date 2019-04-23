@@ -1,15 +1,18 @@
-source "https://rubygems.org"
-
+    
+source 'https://rubygems.org'
 gem 'sinatra'
 gem 'data_mapper'
-gem 'sinatra-namespace'
+gem 'sinatra-flash'
 gem 'jwt'
-gem 'json'
-gem 'wdm'
+gem 'sinatra-namespace'
 
-
-group :development do  
+group :development do
     gem 'sqlite3', '~> 1.3', '< 1.4'
-    gem 'dm-sqlite-adapter'
+    gem "dm-sqlite-adapter"
+    gem 'rspec'
     gem 'rack-test'
+    gem 'capybara'
+    gem 'dm-rspec'
+    gem 'rack_session_access'
+    gem 'puma'
 end
