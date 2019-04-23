@@ -22,6 +22,9 @@ end
 
 # API # 
 namespace '/api/v1' do
+
+  #SALON
+
   get "/salon/all" do
     salon = Salon.all
     return salon.to_json
@@ -71,4 +74,42 @@ namespace '/api/v1' do
 
   end
 
+  #ADMINISTRATOR
+
+  get "/administrator/all" do
+
+  end
+
+  get "/administrator/:id" do
+
+  end
+
+  get "/administrator/:first_name" do
+
+  end
+
+  get "/administrator/:middle_name" do
+
+  end
+
+  get "/administrator/:last_name" do
+
+  end
+
+  get "/administrator/:phone_number" do
+
+  end
+
+  get "/administrator/:emergency_number" do
+
+  end
+
+  get "/administrator/:email" do
+
+  end
+
+  get "/administrator/:pass_code" do
+
+  end
+  
 end
