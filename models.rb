@@ -158,7 +158,9 @@ Service.auto_upgrade!
 Customer.auto_upgrade!
 
 
-## UNCOMMENT WHEN TABLES ARE CHANGED OR ADDED ##
+## UNCOMMENT WHEN TABLES ARE DRASTICALLY CHANGED OR ADDED ##
+### WILL WIPE DATABASE ###
+
 # Salon.auto_migrate!
 # Queue.auto_migrate!
 # Status.auto_migrate!
