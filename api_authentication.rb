@@ -2,6 +2,7 @@
 require 'jwt'
 require "json"
 
+
 SECRET_KEY = "lasjdflajsdlfkjasldkfjalksdjflk"
 
 def api_authenticate!
@@ -72,21 +73,24 @@ post "/api/register" do
 		salon = Salon.first(passcode: salon_passcode.downcase)
 
 		if(salon)
-				halt 422, {"message": "Salon passcode already exists"}.to_json
-		else
-				new_salon = Salon.create(
-                    :name => params['name'],
-                    :address => params['address'],
-                    :phone_number => params['phone_number'],
-                    :email => params['email'],
-                    :passcode => salon_passcode
-                )
-                return new_salon.to_json
-				halt 201, {"message": "Salon successfully registered"}.to_json
+            halt 422, {"message": "Salon passcode already exists"}.to_json
+        else
+            # Create record.
+            new_salon = Salon.new
+            new_salon.name =  params['name']
+            new_salon.address = params['address']
+            new_salon.phone_number = params['phone']
+            new_salon.email = params['email']
+            new_salon.passcode = salon_passcode
+            new_salon.created_at = Time.now
+            new_salon.save
+
+            return new_salon.to_json
+            halt 201, {"message": "Salon successfully registered"}.to_json
 		end
 	else
-		message = "Missing salon passcode"
-	  halt 400, {"message": message}.to_json
+        message = "Missing salon passcode"
+        halt 400, {"message": message}.to_json
 	end
 end
 
