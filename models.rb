@@ -4,6 +4,7 @@ require 'data_mapper'
 ## ## ## Setup ## ## ##
 # Displays logs (error messages) for debugging.
 DataMapper::Logger.new($stdout, :debug)
+DataMapper::Model.raise_on_save_failure = true  # globally across all models
 # Need install dm-sqlite-adapter.
 # Uses postgress when on heroku.
 if ENV['DATABASE_URL']
@@ -12,29 +13,8 @@ else
     DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/app.db")
 end
 
-
-
 ## ## ## Tables ## ## ##
-class Salon
-    include DataMapper::Resource
 
-    property :id                , Serial
-    property :name              , Text      , required: true
-    property :address           , Text      , required: true
-    property :phone_number      , Text      , required: true
-    property :email             , Text      , format: :email_address
-    property :passcode          , Text      , required: true    , default: '000'
-    property :created_at        , DateTime
-
-    has n, :employees
-    has n, :services
-    has n, :customers
-    has n, :appointments
-
-    def login(salon_passcode)
-        return self.passcode == salon_passcode
-    end
-end
 
 class Customer
     include DataMapper::Resource
@@ -45,8 +25,12 @@ class Customer
     property :phone_number  , Text      , default: "xxx-xxx-xxxx"
     property :time_in       , DateTime
 
-    belongs_to :salon
-    has n, :appointments
+    property :salon_id      , Integer
+
+    ## Relations.
+    def appointments
+        return Appointment.all(:customer_id=>self.id)
+    end
 end
 
 class Service
@@ -56,9 +40,13 @@ class Service
     property :service_name  , Text      , required: true
     property :created_at    , DateTime
 
+    property :salon_id      , Integer
 
-    belongs_to :salon
-    has n, :employees
+
+    ## Relations.
+    def employee
+        return Employee.all(:service_id=>self.id)
+    end
 end
 
 class Employee
@@ -77,9 +65,16 @@ class Employee
     # 0 = administrator
     property :role_id           , Integer   , default: 1
     
-    has n, :timesheets
-    has n, :appointments
-    belongs_to :salon
+    property :salon             , Integer
+
+
+    ## Relations.
+    def timesheets
+        return Timesheet.all(:employee_id=>self.id)
+    end
+    def appointments
+        return Appointment.all(:employee_id=>self.id)
+    end
 end
 
 class Timesheet  
@@ -89,7 +84,7 @@ class Timesheet
     property :created_at        , DateTime
     property :clock_in          , Boolean   , required: true
 
-    belongs_to :employee
+    property :employee_id       , Integer
 end
 
 class Appointment 
@@ -98,9 +93,9 @@ class Appointment
     property :id                , Serial
     property :created_at        , DateTime
 
-    belongs_to :customer
-    belongs_to :employee
-    belongs_to :salon
+    property :customer_id       , Integer
+    property :employee_id       , Integer
+    property :salon_id          , Integer
 end
 
 class Status 
@@ -108,20 +103,68 @@ class Status
 
     property :id                , Serial 
     property :created_at        , DateTime
-
-    belongs_to :appointment
+    property :appointment_id    , Integer
 end
 
 class Queue 
     include DataMapper::Resource
 
     property :id                , Serial
+    property :customer_id       , Integer
+    property :salon_id          , Integer
+    property :status_id         , Integer
+end
+class Salon
+    include DataMapper::Resource
 
-    belongs_to :customer
-    belongs_to :salon 
-    belongs_to :status
+    property :id                , Serial
+    property :name              , Text      , required: true
+    property :address           , Text      , required: true
+    property :phone_number      , Text      , required: true
+    property :email             , Text      , format: :email_address
+    property :passcode          , Text      , required: true    , default: '000'
+    property :created_at        , DateTime
+
+    
+    ## Relations.
+    def employees
+        return Employee.all(:salon_id=>self.id)
+    end
+    def services 
+        return Service.all(:salon_id=>self.id)
+    end
+    def customers
+        return Customer.all(:salon_id=>self.id)
+    end
+    def appointments
+        return Appointment.all(:salon_id=>self.id)
+    end
+
+
+    def login(salon_passcode)
+        return self.passcode == salon_passcode
+    end
 end
 
-
 DataMapper.finalize
-DataMapper.auto_upgrade!
+
+Salon.auto_upgrade!
+Queue.auto_upgrade!
+Status.auto_upgrade!
+Appointment.auto_upgrade!
+Timesheet.auto_upgrade!
+Employee.auto_upgrade!
+Service.auto_upgrade!
+Customer.auto_upgrade!
+
+
+## UNCOMMENT WHEN TABLES ARE CHANGED OR ADDED ##
+# Salon.auto_migrate!
+# Queue.auto_migrate!
+# Status.auto_migrate!
+# Appointment.auto_migrate!
+# Timesheet.auto_migrate!
+# Employee.auto_migrate!
+# Service.auto_migrate!
+# Customer.auto_migrate!
+

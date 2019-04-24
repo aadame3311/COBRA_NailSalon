@@ -23,8 +23,7 @@ end
 # API # 
 namespace '/api/v1' do
 
-  #SALON
-
+  # SALON
   get "/salon/all" do
     salon = Salon.all
     return salon.to_json
@@ -74,8 +73,7 @@ namespace '/api/v1' do
 
   end
 
-  #ADMINISTRATOR
-
+  # EMPLOYEES 
   get "/administrator/all" do
 
   end
