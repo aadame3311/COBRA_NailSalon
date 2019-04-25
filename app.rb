@@ -110,4 +110,57 @@ namespace '/api/v1' do
 
   end
 
+  #CUSTOMER
+
+  get "/customer/all" do
+
+  end
+
+  get "/customer/:id" do
+
+  end
+
+  get "/customer/:first_name" do
+
+  end
+
+  get "/customer/:last_name" do
+
+  end
+
+  get "/customer/:phone_number" do
+
+  end
+
+  get "/customer/:time_in" do
+
+  end
+
+  get "/customer/:salon_id" do
+
+  end
+
+  #SERVICE
+
+  get "/service/all" do
+
+  end
+
+  get "/service/:id" do
+
+  end
+
+  get "/service/:service_name" do
+
+  end
+
+  get "/service/:created_at" do
+
+  end
+
+  get "/service/:salon_id" do
+
+  end
+
+
 end
