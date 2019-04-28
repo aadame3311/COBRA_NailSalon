@@ -29,8 +29,14 @@ namespace '/api/v1' do
     return salon.to_json
   end
 
+  # RETURN SALON WITH GIVEN ID
   get "/salon/:id" do
-
+    api_authenticate!
+      s = Salon.get(params["id"])
+      if s
+        return s.to_json
+      else
+        halt 404, {message: "404 Salon Not Found"}.to_json
   end
 
   get "/salon/:name" do
