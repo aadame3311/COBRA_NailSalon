@@ -4,7 +4,7 @@ require 'data_mapper'
 ## ## ## Setup ## ## ##
 # Displays logs (error messages) for debugging.
 DataMapper::Logger.new($stdout, :debug)
-DataMapper::Model.raise_on_save_failure = true  # globally across all models
+# DataMapper::Model.raise_on_save_failure = true  # globally across all models
 # Need install dm-sqlite-adapter.
 # Uses postgress when on heroku.
 if ENV['DATABASE_URL']
@@ -59,13 +59,13 @@ class Employee
     property :phone_number      , String    , required: true
     property :emergency_number  , String    , required: true
     property :email             , String    , format: :email_address
-    property :passcode         , String    , required: true, unique_index: true, length: 8, default: '000'
+    property :passcode          , String    , required: true, unique_index: true, length: 8, default: '000'
     property :created_at        , DateTime
     # 1 = employee
     # 0 = administrator
     property :role_id           , Integer   , default: 1
     
-    property :salon             , Integer
+    property :salon_id          , Integer
 
 
     ## Relations.

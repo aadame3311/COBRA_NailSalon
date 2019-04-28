@@ -39,28 +39,14 @@ namespace '/api/v1' do
 
   end
 
-  get "/salon/:address" do
-
-  end
-
-  get "/salon/:phone_number" do
-
-  end
-
-  get "/salon/:email" do
-
-  end
-
-  get "/salon/:created_at" do
-
-  end
-
   get "/salon/:id/employees" do
-    employees = Salon.get(:id).employee
+    api_authenticate!
+
+    employees = Salon.get(params[:id]).employees
     return employees.to_json
   end
   post "/salon/:id/employee" do
-    Employee.create(
+    emp = Employee.create(
       :first_name => params['first_name'],
       :middle_name => params['middle_name'],
       :last_name => params['last_name'],
@@ -68,7 +54,11 @@ namespace '/api/v1' do
       :emergency_number => params['emergency_number'],
       :email => params['email'],
       :passcode => params['passcode'],
+      :role_id => params['role_id'],
+      :salon_id => params['id'],
+      :created_at => Time.now,
     )
+    return emp.to_json
   end
 
   get "/salon/administrators" do
