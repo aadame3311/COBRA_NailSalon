@@ -120,7 +120,7 @@ class Salon
     property :id                , Serial
     property :name              , Text      , required: true
     property :address           , Text      , required: true
-    property :phone_number      , Text      , required: true
+    property :phone_number      , Text      , required: true    , default: '000-000-0000'
     property :email             , Text      , format: :email_address
     property :passcode          , Text      , required: true    , default: '000'
     property :created_at        , DateTime
@@ -169,4 +169,3 @@ Customer.auto_upgrade!
 # Employee.auto_migrate!
 # Service.auto_migrate!
 # Customer.auto_migrate!
-

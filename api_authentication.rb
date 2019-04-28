@@ -40,7 +40,7 @@ def current_salon
 		return @api_user
 	else
 		if(session[:salon_id])
-			@salon ||= User.first(id: session[:salon_id])
+			@salon ||= Salon.first(id: session[:salon_id])
 			return @salon
 		else
 			return nil
@@ -78,8 +78,8 @@ post "/api/register" do
             # Create record.
             new_salon = Salon.new
             new_salon.name =  params['name']
-            new_salon.address = params['address']
-            new_salon.phone_number = params['phone']
+			new_salon.address = params['address']
+			new_salon.phone_number = params['phone']
             new_salon.email = params['email']
             new_salon.passcode = salon_passcode
             new_salon.created_at = Time.now
