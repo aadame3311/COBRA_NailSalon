@@ -25,6 +25,8 @@ namespace '/api/v1' do
 
   # SALON
   get "/salon/all" do
+    api_authenticate!
+    
     salon = Salon.all
     return salon.to_json
   end
@@ -53,8 +55,20 @@ namespace '/api/v1' do
 
   end
 
-  get "/salon/employees" do
-
+  get "/salon/:id/employees" do
+    employees = Salon.get(:id).employee
+    return employees.to_json
+  end
+  post "/salon/:id/employee" do
+    Employee.create(
+      :first_name => params['first_name'],
+      :middle_name => params['middle_name'],
+      :last_name => params['last_name'],
+      :phone_number => params['phone'],
+      :emergency_number => params['emergency_number'],
+      :email => params['email'],
+      :passcode => params['passcode'],
+    )
   end
 
   get "/salon/administrators" do
@@ -74,39 +88,35 @@ namespace '/api/v1' do
   end
 
   # EMPLOYEES 
-  get "/administrator/all" do
+  get "/employee/:id" do
 
   end
 
-  get "/administrator/:id" do
+  get "/employee/:first_name" do
 
   end
 
-  get "/administrator/:first_name" do
+  get "/employee/:middle_name" do
 
   end
 
-  get "/administrator/:middle_name" do
+  get "/employee/:last_name" do
 
   end
 
-  get "/administrator/:last_name" do
+  get "/employee/:phone_number" do
 
   end
 
-  get "/administrator/:phone_number" do
+  get "/employee/:emergency_number" do
 
   end
 
-  get "/administrator/:emergency_number" do
+  get "/employee/:email" do
 
   end
 
-  get "/administrator/:email" do
-
-  end
-
-  get "/administrator/:pass_code" do
+  get "/employee/:pass_code" do
 
   end
 
