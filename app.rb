@@ -42,16 +42,13 @@ namespace '/api/v1' do
       end
   end
 
-  get "/salon/:name" do
-
-  end
-
   get "/salon/:id/employees" do
     api_authenticate!
 
     employees = Salon.get(params[:id]).employees
     return employees.to_json
   end
+  
   post "/salon/:id/employee" do
     api_authenticate!
 
@@ -65,7 +62,7 @@ namespace '/api/v1' do
       :salon_id => params['id'],
       :created_at => Time.now,
     )
-    
+
   end
 
   get "/salon/administrators" do
