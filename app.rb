@@ -39,10 +39,7 @@ namespace '/api/v1' do
         return s.to_json
       else
         halt 404, {message: "404 Salon Not Found"}.to_json
-  end
-
-  get "/salon/:name" do
-
+      end
   end
 
   get "/salon/:id/employees" do
@@ -51,6 +48,7 @@ namespace '/api/v1' do
     employees = Salon.get(params[:id]).employees
     return employees.to_json
   end
+  
   post "/salon/:id/employee" do
     emp = Employee.create(
       :first_name => params['first_name'],
