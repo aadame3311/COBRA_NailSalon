@@ -65,19 +65,22 @@ namespace '/api/v1' do
 
   end
 
-  get "/salon/administrators" do
+  get "/salon/:id/administrators" do
+    api_authenticate!
+
+    admins = Employee.all(:role_id => 0)
+    return admins.to_json
+  end
+
+  get "/salon/:id/services" do
 
   end
 
-  get "/salon/services" do
+  get "/salon/:id/customers" do
 
   end
 
-  get "/salon/customers" do
-
-  end
-
-  get "/salon/appointments" do
+  get "/salon/:id/appointments" do
 
   end
 
