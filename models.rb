@@ -85,6 +85,7 @@ class Timesheet
     property :clock_in          , Boolean   , :required => true
 
     property :employee_id       , Integer
+    property :salon_id          , Integer
 end
 
 class Appointment 
@@ -96,6 +97,7 @@ class Appointment
     property :customer_id       , Integer
     property :employee_id       , Integer
     property :salon_id          , Integer
+    property :status_id         , Integer
 end
 
 class Status 
@@ -103,7 +105,6 @@ class Status
 
     property :id                , Serial 
     property :created_at        , DateTime
-    property :appointment_id    , Integer
 end
 
 class Queue 
@@ -113,6 +114,7 @@ class Queue
     property :customer_id       , Integer
     property :salon_id          , Integer
     property :status_id         , Integer
+    property :appointment_id    , Integer
 end
 class Salon
     include DataMapper::Resource
@@ -138,6 +140,9 @@ class Salon
     end
     def appointments
         return Appointment.all(:salon_id=>self.id)
+    end
+    def timesheets 
+        return Timesheet.all(:salon_id=>self.id)
     end
 
 
