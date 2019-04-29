@@ -89,6 +89,9 @@ namespace '/api/v1' do
       not_allowed!
     end
   end
+  # Remove employee from database via its ID.
+  delete "/salon/:id/employee/:emp_id" do 
+  end
 
   # ADMINISTRATORS
   get "/salon/:id/administrators" do
@@ -99,67 +102,105 @@ namespace '/api/v1' do
   end
 
   # SERVICES
+  # Return all services offered by a salon.
   get "/salon/:id/services" do
     api_authenticate!
 
   end
+  # Create new service object under salon.
   post "/salon/:id/service" do
     api_authenticate!
 
   end
+  # Edit salon service.
   patch "/salon/:id/service/:serv_id" do 
     api_authenticate!
 
   end
+  # Remove service from salon.
   delete "/salon/:id/service/:serv_id" do
     api_authenticate!
 
   end
 
   # CUSTOMERS
+  # Return all salon customers.
   get "/salon/:id/customers" do
     api_authenticate!
 
   end
+  # Create new customer object.
   post "/salon/:id/customer" do 
     api_authenticate!
 
   end
 
   # APPOINTMENTS
+  # Return all appintments from salon with :id
   get "/salon/:id/appointments" do
     api_authenticate!
 
   end
-  post "/salon/:id/appointment" do
+  # Create appointment object for employee and customer.
+  # Also creates a Queue object.
+  post "/salon/:id/appointment/:emp_id/:cust_id/:status_id" do
     api_authenticate!
 
-  end
-  delete "/salon/:id/appointment/:app_id" do
-    api_authenticate!
+    if params[:id] == current_salon.id
+      employee = Employee.get(params[:emp_id])
+      customer = Customer.get(params[:cust_id])
+      # Checks if employee works for salon. Checks if customer is customer of salon.
+      if current_salon.id == employee.salon_id && current_salon.id == customer.salon_id
+        new_appointment = Appointment.new
+        new_appointment.customer_id = customer.id
+        new_appointment.employee_id = employee.id
+        new_appointment.salon_id = params[:id]
+        new_appointment.status_id = params[:status_id]
+        new_appointment.save
+
+        # Create queue object based of appointment and status.
+        new_queue = Queue.new
+        new_queue.customer_id = customer.id
+        new_queue.salon_id = params[:id]
+        new_queue.status_id = params[:status_id]
+        new_queue.appointment_id = new_appointment.id
+        new_queue.save
+      end
+    else
+      not_allowed!
+    end
 
   end
 
   # TIMESHEETS 
+  # Return all timesheets for a salon.
   get "/salon/:id/timesheets/all" do
     api_authenticate!
 
     if params[:id]==current_salon.id
-      timesheets = Timesheet.all(:salon_id => params[:id])
+      salon = Salon.get(params[:id])
+      return salon.timesheets.to_json if salon
+
+      not_found!
     else
       not_allowed!
     end
   end
+  # Return all timesheets for employee with employee id.
   get "/salon/:id/timesheet/:emp_id" do
     api_authenticate!
 
     if params[:id]==current_salon.id
-      timesheet = Timesheet.all(:employee_id => params[:emp_id])
-      return timesheet.to_json if timesheet
+      employee = Employee.get(params[:emp_id])
+      return employee.timesheets.to_json if employee
     else
       not_allowed!
     end
   end
+  # Create timesheet object for employee.
+  post "/salon/:id/timesheet/:emp_id" do 
+  end
+
 
 
 end
