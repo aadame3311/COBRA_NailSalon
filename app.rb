@@ -9,8 +9,12 @@ configure do
     set :root, File.dirname(__FILE__)
 end
 
+# Status codes.
 def not_found!
     halt 404, {message: "404, Not found"}.to_json
+end
+def not_allowed! 
+  halt 403, {"message": "Request not allowed"}.to_json
 end
 
 # Routes
@@ -42,13 +46,13 @@ namespace '/api/v1' do
       end
   end
 
+  # EMPLOYEES
   get "/salon/:id/employees" do
     api_authenticate!
 
     employees = Salon.get(params[:id]).employees
     return employees.to_json
   end
-  
   post "/salon/:id/employee" do
     api_authenticate!
 
@@ -64,7 +68,29 @@ namespace '/api/v1' do
     )
 
   end
+  patch "/salon/:id/employee/:emp_id" do 
+    api_authenticate!
 
+    # Make sure the employee belongs to the salon calling the route.
+    if params[:id]==current_salon.id
+      employee = Employee.get(params[:emp_id])
+
+      # Edit parameter depending on parameter passed in.
+      employee.first_name = params["first_name"] if params["first_name"]
+      employee.middle_name = params["middle_name"] if params["middle_name"]
+      employee.last_name = params["last_name"] if params["last_name"]
+      employee.phone_number = params["phone"] if params["phone"]
+      employee.emergency_number = params["emergency_number"] if params["emergency_number"]
+      employee.email = params["email"] if params["email"]
+      employee.role_id = params["role_id"] if params["role_id"]
+
+      employee.save
+    else 
+      not_allowed!
+    end
+  end
+
+  # ADMINISTRATORS
   get "/salon/:id/administrators" do
     api_authenticate!
 
@@ -72,101 +98,67 @@ namespace '/api/v1' do
     return admins.to_json
   end
 
+  # SERVICES
   get "/salon/:id/services" do
+    api_authenticate!
+
+  end
+  post "/salon/:id/service" do
+    api_authenticate!
+
+  end
+  patch "/salon/:id/service/:serv_id" do 
+    api_authenticate!
+
+  end
+  delete "/salon/:id/service/:serv_id" do
+    api_authenticate!
 
   end
 
+  # CUSTOMERS
   get "/salon/:id/customers" do
+    api_authenticate!
+
+  end
+  post "/salon/:id/customer" do 
+    api_authenticate!
 
   end
 
+  # APPOINTMENTS
   get "/salon/:id/appointments" do
+    api_authenticate!
+
+  end
+  post "/salon/:id/appointment" do
+    api_authenticate!
+
+  end
+  delete "/salon/:id/appointment/:app_id" do
+    api_authenticate!
 
   end
 
-  # EMPLOYEES 
-  get "/employee/:id" do
+  # TIMESHEETS 
+  get "/salon/:id/timesheets/all" do
+    api_authenticate!
 
+    if params[:id]==current_salon.id
+      timesheets = Timesheet.all(:salon_id => params[:id])
+    else
+      not_allowed!
+    end
   end
+  get "/salon/:id/timesheet/:emp_id" do
+    api_authenticate!
 
-  get "/employee/:first_name" do
-
-  end
-
-  get "/employee/:middle_name" do
-
-  end
-
-  get "/employee/:last_name" do
-
-  end
-
-  get "/employee/:phone_number" do
-
-  end
-
-  get "/employee/:emergency_number" do
-
-  end
-
-  get "/employee/:email" do
-
-  end
-
-  get "/employee/:pass_code" do
-
-  end
-
-  #CUSTOMER
-
-  get "/customer/all" do
-
-  end
-
-  get "/customer/:id" do
-
-  end
-
-  get "/customer/:first_name" do
-
-  end
-
-  get "/customer/:last_name" do
-
-  end
-
-  get "/customer/:phone_number" do
-
-  end
-
-  get "/customer/:time_in" do
-
-  end
-
-  get "/customer/:salon_id" do
-
-  end
-
-  #SERVICE
-
-  get "/service/all" do
-
-  end
-
-  get "/service/:id" do
-
-  end
-
-  get "/service/:service_name" do
-
-  end
-
-  get "/service/:created_at" do
-
-  end
-
-  get "/service/:salon_id" do
-
+    if params[:id]==current_salon.id
+      timesheet = Timesheet.all(:employee_id => params[:emp_id])
+      return timesheet.to_json if timesheet
+    else
+      not_allowed!
+    end
   end
 
 
