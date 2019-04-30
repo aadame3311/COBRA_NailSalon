@@ -13,7 +13,7 @@ def api_authenticate!
 		encoded_token = bearer.slice(7..-1)
 		begin
 		decoded_token = JWT.decode encoded_token, SECRET_KEY, true, { algorithm: 'HS256' }
-		salon_id = decoded_token[0]["salon_id"]
+		salon_id = decoded_token[0]["user_id"]
 		@api_user = Salon.get(salon_id)
 		rescue JWT::DecodeError
 		 	halt 401, 'A valid token must be passed.'
