@@ -126,17 +126,33 @@ namespace '/api/v1' do
   post "/salon/:id/service" do
     api_authenticate!
 
-
+    Service.create(
+        :service_name => params['service_name'],
+        :created_at => Time.now,
+        :salon_id => params['id'],
+        )
   end
   # Edit salon service.
   patch "/salon/:id/service/:serv_id" do 
     api_authenticate!
+
 
   end
   # Remove service from salon.
   delete "/salon/:id/service/:serv_id" do
     api_authenticate!
 
+    s = Service.get(params["serv_id"])
+
+    if (s ==nil)
+      not_found!
+    end
+
+    if (current_salon.id == s.salon_id)
+      s.destroy
+    else
+      halt 401, {message: "401 Action Not Allowed"}.to_json
+    end
   end
 
   # CUSTOMERS
