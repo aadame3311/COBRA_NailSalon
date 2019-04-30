@@ -175,11 +175,11 @@ Customer.auto_upgrade!
 ## UNCOMMENT WHEN TABLES ARE DRASTICALLY CHANGED OR ADDED ##
 ### WILL WIPE DATABASE ###
 
-#Salon.auto_migrate!
-#Queue.auto_migrate!
-#Status.auto_migrate!
-#Appointment.auto_migrate!
-#Timesheet.auto_migrate!
-#Employee.auto_migrate!
-#Service.auto_migrate!
-#Customer.auto_migrate!
+Salon.auto_migrate!
+Queue.auto_migrate!
+Status.auto_migrate!
+Appointment.auto_migrate!
+Timesheet.auto_migrate!
+Employee.auto_migrate!
+Service.auto_migrate!
+Customer.auto_migrate!
