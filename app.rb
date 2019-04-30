@@ -21,6 +21,20 @@ end
 get '/' do
     erb :index
 end
+get '/salon/signin/' do 
+end
+get '/salon/:id/signin/menu/' do 
+end
+get '/salon/:id/signin/employee/' do 
+end
+get '/salon/:id/signin/employee/' do
+end
+get '/salon/:id/dashboard/' do 
+end
+get '/salon/:id/employee/dashboard' do
+end
+get '/salon/:id/employee/dashboard/services/'
+
 
 
 
