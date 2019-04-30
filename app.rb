@@ -55,8 +55,7 @@ namespace '/api/v1' do
   end
 
   post "/salon/:id/employee" do
-    api_authentica
-    e!
+    api_authenticate!
 
     Employee.create(
       :first_name => params['first_name'],
@@ -127,6 +126,7 @@ namespace '/api/v1' do
   post "/salon/:id/service" do
     api_authenticate!
 
+
   end
   # Edit salon service.
   patch "/salon/:id/service/:serv_id" do 
@@ -144,11 +144,21 @@ namespace '/api/v1' do
   get "/salon/:id/customers" do
     api_authenticate!
 
+    customers = Customer.all(:salon_id => params[:id])
+    return customers.to_json
   end
+
   # Create new customer object.
   post "/salon/:id/customer" do 
     api_authenticate!
 
+    Customer.create(
+        :first_name => params['first_name'],
+        :last_name => params['last_name'],
+        :phone_number => params['phone_number'],
+        :time_in => Time.now,
+        :salon_id => params['id'],
+        )
   end
 
   # APPOINTMENTS
