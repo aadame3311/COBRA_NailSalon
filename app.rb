@@ -33,7 +33,8 @@ get '/salon/:id/dashboard/' do
 end
 get '/salon/:id/employee/dashboard' do
 end
-get '/salon/:id/employee/dashboard/services/'
+get '/salon/:id/employee/dashboard/services/' do 
+end
 
 
 
