@@ -21,21 +21,6 @@ end
 get '/' do
     erb :index
 end
-get '/salon/signin/' do 
-end
-get '/salon/:id/signin/menu/' do 
-end
-get '/salon/:id/signin/employee/' do 
-end
-get '/salon/:id/signin/employee/' do
-end
-get '/salon/:id/dashboard/' do 
-end
-get '/salon/:id/employee/dashboard' do
-end
-get '/salon/:id/employee/dashboard/services/' do 
-end
-
 
 
 
@@ -105,34 +90,8 @@ namespace '/api/v1' do
       not_allowed!
     end
   end
-  # Employee assigns which services he wants to offer. 
-  post '/salon/:id/employee/:emp_id/service/:serv_id' do
-    api_authenticate!
-
-    if current_salon.id == params[:id]
-      ServiceEmployee.create(
-        :service_id => params[:serv_id],
-        :employee_id => params[:emp_id]
-      )
-    end
-  end
-  # Return all services offered by an employee.
-  get '/salon/:id/employee/:emp_id/services' do 
-    api_authenticate!
-
-    if current_salon.id == params[:id]
-      employee = Employee.get(params[:emp_id])
-      # Make sure employee works at salon.
-      if current_salon.id == employee.salon_id
-        services = ServiceEmployee.all(:employee_id => employee.id)
-        return services.to_json
-      end
-    end
-  end
-
   # Remove employee from database via its ID.
   delete "/salon/:id/employee/:emp_id" do
-    api_authenticate!
     e = Employee.get(params["emp_id"])
     
     if (e ==nil)
@@ -177,17 +136,6 @@ namespace '/api/v1' do
   patch "/salon/:id/service/:serv_id" do 
     api_authenticate!
 
-    # Make sure the employee belongs to the salon calling the route.
-    if params[:id]==current_salon.id
-      service = Service.get(params[:serv_id])
-
-      # Edit parameter depending on parameter passed in.
-      service.service_name = params["service_name"] if params["service_name"]
-
-      service.save
-    else
-      not_allowed!
-    end
 
   end
   # Remove service from salon.
@@ -230,14 +178,11 @@ namespace '/api/v1' do
   end
 
   # APPOINTMENTS
-  # Return all appointments from salon with :id
+  # Return all appintments from salon with :id
   get "/salon/:id/appointments" do
     api_authenticate!
 
-    appointments = Appointment.all(:salon_id => params[:id])
-    return appointments.to_json
   end
-
   # Create appointment object for employee and customer.
   # Also creates a Queue object.
   post "/salon/:id/appointment/:emp_id/:cust_id/:status_id" do
@@ -269,7 +214,8 @@ namespace '/api/v1' do
 
   end
 
-  # TIMESHEETS 
+  # TIMESHEETS -----------------------------------------------------------------
+
   # Return all timesheets for a salon.
   get "/salon/:id/timesheets/all" do
     api_authenticate!
@@ -283,6 +229,7 @@ namespace '/api/v1' do
       not_allowed!
     end
   end
+
   # Return all timesheets for employee with employee id.
   get "/salon/:id/timesheet/:emp_id" do
     api_authenticate!
@@ -294,8 +241,21 @@ namespace '/api/v1' do
       not_allowed!
     end
   end
+
   # Create timesheet object for employee.
   post "/salon/:id/timesheet/:emp_id" do 
+    api_authenticate!
+
+    if params[:id]==current_salon.id
+      timesheet = Timesheet.new
+      timesheet.clock_in = true
+      timesheet.created_at = Time.now
+      timesheet.salon_id = current_salon.id
+      timesheet.employee_id = params[:emp_id]
+      timesheet.save
+    else
+      not_allowed!
+    end
   end
 
 
