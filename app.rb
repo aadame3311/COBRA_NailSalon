@@ -243,12 +243,12 @@ namespace '/api/v1' do
   end
 
   # Create timesheet object for employee.
-  post "/salon/:id/timesheet/:emp_id" do 
+  post "/salon/:id/timesheet/:boolean/:emp_id" do 
     api_authenticate!
 
     if params[:id]==current_salon.id
       timesheet = Timesheet.new
-      timesheet.clock_in = true
+      timesheet.clock_in = params[:boolean]
       timesheet.created_at = Time.now
       timesheet.salon_id = current_salon.id
       timesheet.employee_id = params[:emp_id]
