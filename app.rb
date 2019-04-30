@@ -42,7 +42,7 @@ namespace '/api/v1' do
       if s
         return s.to_json
       else
-        halt 404, {message: "404 Salon Not Found"}.to_json
+        not_found!
       end
   end
 
@@ -53,8 +53,10 @@ namespace '/api/v1' do
     employees = Salon.get(params[:id]).employees
     return employees.to_json
   end
+
   post "/salon/:id/employee" do
-    api_authenticate!
+    api_authentica
+    e!
 
     Employee.create(
       :first_name => params['first_name'],
@@ -90,7 +92,18 @@ namespace '/api/v1' do
     end
   end
   # Remove employee from database via its ID.
-  delete "/salon/:id/employee/:emp_id" do 
+  delete "/salon/:id/employee/:emp_id" do
+    e = Employee.get(params["emp_id"])
+    
+    if (e ==nil)
+      not_found!
+    end
+
+    if (current_salon.id == e.salon_id)
+      e.destroy
+    else
+      halt 401, {message: "401 Action Not Allowed"}.to_json
+    end  
   end
 
   # ADMINISTRATORS
@@ -106,7 +119,10 @@ namespace '/api/v1' do
   get "/salon/:id/services" do
     api_authenticate!
 
+    services = Service.all(:salon_id => params[:id])
+    return services.to_json
   end
+
   # Create new service object under salon.
   post "/salon/:id/service" do
     api_authenticate!
