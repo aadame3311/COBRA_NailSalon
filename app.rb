@@ -105,6 +105,31 @@ namespace '/api/v1' do
       not_allowed!
     end
   end
+  # Employee assigns which services he wants to offer. 
+  post '/salon/:id/employee/:emp_id/service/:serv_id' do
+    api_authenticate!
+
+    if current_salon.id == params[:id]
+      ServiceEmployee.create(
+        :service_id => params[:serv_id],
+        :employee_id => params[:emp_id]
+      )
+    end
+  end
+  # Return all services offered by an employee.
+  get '/salon/:id/employee/:emp_id/services' do 
+    api_authenticate!
+
+    if current_salon.id == params[:id]
+      employee = Employee.get(params[:emp_id])
+      # Make sure employee works at salon.
+      if current_salon.id == employee.salon_id
+        services = ServiceEmployee.all(:employee_id => employee.id)
+        return services.to_json
+      end
+    end
+  end
+
   # Remove employee from database via its ID.
   delete "/salon/:id/employee/:emp_id" do
     api_authenticate!
