@@ -15,5 +15,4 @@ group :development do
     gem 'dm-rspec'
     gem 'rack_session_access'
     gem 'puma'
-    gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 end
