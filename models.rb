@@ -41,12 +41,21 @@ class Service
     property :created_at    , DateTime
 
     property :salon_id      , Integer
-
+    
 
     ## Relations.
     def employee
         return Employee.all(:service_id=>self.id)
     end
+end
+
+class ServiceEmployee 
+    include DataMapper::Resource
+
+    property :id            , Serial
+
+    property :service_id    , Integer
+    property :employee_id   , Integer
 end
 
 class Employee
