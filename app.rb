@@ -9,6 +9,33 @@ configure do
     set :root, File.dirname(__FILE__)
 end
 
+# Makes sure the current salon cannot access other salons' information.
+def authenticate_salon!
+  curr_id = current_salon.id.to_s.strip
+  salon_id = params[:id].to_s.strip
+
+  if curr_id != salon_id
+    not_allowed!
+    return
+  end
+end
+# Makes sure employee being accessed belongs to the current salon.
+def authenticate_employee!
+  curr_id = current_salon.id.to_s.strip
+  @emp = Employee.get(params[:emp_id])
+  if @emp
+    emp_salonId = @emp.salon_id.to_s.strip
+
+    if curr_id != emp_salonId
+      not_allowed!
+    end
+  else
+    not_found!
+    
+  end
+  
+end
+
 # Status codes.
 def not_found!
     halt 404, {message: "404, Not found"}.to_json
@@ -38,44 +65,54 @@ namespace '/api/v1' do
   # RETURN SALON WITH GIVEN ID
   get "/salon/:id" do
     api_authenticate!
-      s = Salon.get(params["id"])
-      if s
-        return s.to_json
-      else
-        not_found!
-      end
+    s = Salon.get(params["id"])
+    if s
+      return s.to_json
+    else
+      not_found!
+    end
   end
 
   # EMPLOYEES
   get "/salon/:id/employees" do
     api_authenticate!
+    authenticate_salon!
 
-    employees = Salon.get(params[:id]).employees
+    salon = Salon.get(params[:id])
+    if salon
+      employees = salon.employees
+    else 
+      not_found!
+    end
+    
     return employees.to_json
   end
 
   post "/salon/:id/employee" do
     api_authenticate!
+    authenticate_salon!
 
-    Employee.create(
-      :first_name => params['first_name'],
-      :middle_name => params['middle_name'],
-      :last_name => params['last_name'],
-      :email => params['email'],
-      :passcode => params['passcode'],
-      :role_id => params['role_id'],
-      :salon_id => params['id'],
-      :created_at => Time.now,
-    )
+    e = Employee.new
+    e.first_name = params['first_name']
+    e.middle_name = params['middle_name'] if params['middle_name']
+    e.last_name = params['last_name'] if params['last_name']
+    e.email = params['email']
+    e.passcode = params['passcode']
+    e.role_id = params['role_id'] if params['role_id']
+    e.salon_id = params['id']
+    e.created_at = Time.now
+    e.save
 
   end
   patch "/salon/:id/employee/:emp_id" do 
     api_authenticate!
+    authenticate_salon!
+    authenticate_employee!
 
-    # Make sure the employee belongs to the salon calling the route.
-    if params[:id]==current_salon.id
-      employee = Employee.get(params[:emp_id])
-
+    # @emp comes from authenticate employee. 
+    # Didn't want to re-query the database so we use the same @emp global that's alreadyd defined.
+    employee = @emp
+    if employee
       # Edit parameter depending on parameter passed in.
       employee.first_name = params["first_name"] if params["first_name"]
       employee.middle_name = params["middle_name"] if params["middle_name"]
@@ -87,29 +124,29 @@ namespace '/api/v1' do
 
       employee.save
     else 
-      not_allowed!
+      not_found!
     end
   end
   # Remove employee from database via its ID.
   delete "/salon/:id/employee/:emp_id" do
-    e = Employee.get(params["emp_id"])
-    
-    if (e ==nil)
+    api_authenticate!
+    authenticate_salon!
+    authenticate_employee!
+        
+    if (@emp == nil)
       not_found!
-    end
-
-    if (current_salon.id == e.salon_id)
-      e.destroy
     else
-      halt 401, {message: "401 Action Not Allowed"}.to_json
-    end  
+      @emp.destroy
+    end 
   end
 
   # ADMINISTRATORS
   get "/salon/:id/administrators" do
     api_authenticate!
+    authenticate_salon!
 
     admins = Employee.all(:role_id => 0)
+    admins = admins.all(:salon_id => params[:id])
     return admins.to_json
   end
 
@@ -117,6 +154,7 @@ namespace '/api/v1' do
   # Return all services offered by a salon.
   get "/salon/:id/services" do
     api_authenticate!
+    authenticate_salon!
 
     services = Service.all(:salon_id => params[:id])
     return services.to_json
@@ -125,6 +163,7 @@ namespace '/api/v1' do
   # Create new service object under salon.
   post "/salon/:id/service" do
     api_authenticate!
+    authenticate_salon!
 
     Service.create(
         :service_name => params['service_name'],

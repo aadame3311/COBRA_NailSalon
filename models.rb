@@ -63,7 +63,7 @@ class Employee
 
     property :id                , Serial    
     property :first_name        , Text
-    property :middle_name       , Text
+    property :middle_name       , Text      , :required => false
     property :last_name         , Text
     property :phone_number      , String    , :default => "000-000-0000"
     property :emergency_number  , String    , :default => "000-000-0000"
