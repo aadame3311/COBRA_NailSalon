@@ -106,13 +106,14 @@ class Appointment
     property :customer_id       , Integer
     property :employee_id       , Integer
     property :salon_id          , Integer
-    property :status_id         , Integer
+    property :status_name       , String
 end
 
 class Status 
     include DataMapper::Resource
 
     property :id                , Serial 
+    property :name        , Text
     property :created_at        , DateTime
 end
 
@@ -121,8 +122,9 @@ class Queue
 
     property :id                , Serial
     property :customer_id       , Integer
+    property :employee_id       , Integer
     property :salon_id          , Integer
-    property :status_id         , Integer
+    property :status_name       , String
     property :appointment_id    , Integer
 end
 class Salon
@@ -131,9 +133,9 @@ class Salon
     property :id                , Serial
     property :name              , Text      , :required => true
     property :address           , Text      , :required => true
-    property :phone_number      , Text      , :required => true    , :default => '000-000-0000'
+    property :phone_number      , Text      , :required => true         , :default => '000-000-0000'
     property :email             , Text      , :format => :email_address
-    property :passcode          , Text      , :required => true    , :default => '000'
+    property :passcode          , Text      , :required => true         , :default => '000'
     property :created_at        , DateTime
 
     
