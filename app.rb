@@ -63,8 +63,20 @@ end
 
 # Routes
 get '/' do
-    erb :index
+  erb :index
 end
+get '/salon/signin' do 
+  flash[:notice] = "Hooray, Flash is working!"
+
+  erb :"authentication/salonLogin"
+
+end
+get '/salon/menu' do 
+  signedin_authenticate!
+
+  
+end
+
 
 
 
@@ -351,43 +363,33 @@ namespace '/api/v1' do
   # Return all timesheets for a salon.
   get "/salon/:id/timesheets/all" do
     api_authenticate!
+    authenticate_salon!
 
-    if params[:id]==current_salon.id
-      salon = Salon.get(params[:id].strip)
-      return salon.timesheets.to_json if salon
-
-      not_found!
-    else
-      not_allowed!
-    end
+    salon = Salon.get(params[:id].strip)
+    return salon.timesheets.to_json if salon
   end
 
   # Return all timesheets for employee with employee id.
   get "/salon/:id/timesheet/:emp_id" do
     api_authenticate!
+    authenticate_salon!
 
-    if params[:id]==current_salon.id
-      employee = Employee.get(params[:emp_id].strip)
-      return employee.timesheets.to_json if employee
-    else
-      not_allowed!
-    end
+    employee = Employee.get(params[:emp_id].strip)
+    return employee.timesheets.to_json if employee
   end
 
   # Create timesheet object for employee.
-  post "/salon/:id/timesheet/:boolean/:emp_id" do 
+  post "/salon/:id/timesheet/add" do 
     api_authenticate!
+    authenticate_salon!
+    authenticate_employee!
 
-    if params[:id]==current_salon.id
-      timesheet = Timesheet.new
-      timesheet.clock_in = params[:boolean].strip
-      timesheet.created_at = Time.now
-      timesheet.salon_id = current_salon.id
-      timesheet.employee_id = params[:emp_id].strip
-      timesheet.save
-    else
-      not_allowed!
-    end
+    timesheet = Timesheet.new
+    timesheet.clock_in = params["clock_in"].strip
+    timesheet.created_at = Time.now
+    timesheet.salon_id = current_salon.id
+    timesheet.employee_id = params["emp_id"].strip
+    timesheet.save
   end
 
   # STATUS

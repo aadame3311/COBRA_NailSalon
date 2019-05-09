@@ -1,6 +1,9 @@
     
 require 'jwt'
 require "json"
+require 'sinatra/flash'
+
+enable :sessions
 
 
 SECRET_KEY = "lasjdflajsdlfkjasldkfjalksdjflk"
@@ -47,14 +50,24 @@ def current_salon
 		end
 	end
 end
+def current_employee 
+	if (session[:employee_id])
+		@employee ||= Employee.first(id: sessions[:employee_id])
+		return @employee
+	else
+		return nil
+	end
+end
 
 get "/api/login" do
-	salon_passcode = params['salon_passcode']
+	salon_passcode = params[:salon_passcode]
 	if salon_passcode
 		salon = Salon.first(passcode: salon_passcode.downcase)
 
 		if(salon && salon.login(salon_passcode))
 			content_type :json
+			session[:salon_id] = salon.id
+			redirect "/salon/menu"
 			return {token: token(salon.id)}.to_json
 		else
 			message = "Invalid credentials #{salon_passcode}"
@@ -63,6 +76,14 @@ get "/api/login" do
 	else
 		message = "Missing salon_passcode parameter"
 	    halt 401, {"message": message}.to_json
+	end
+end
+
+get "/api/logout" do 
+	if current_salon 
+		session[:salon_id] = nil
+		redirect "/"
+		return nil
 	end
 end
 
@@ -97,4 +118,11 @@ end
 get "/api/token_check" do
 	api_authenticate!
 	return {"message": "Valid Token"}.to_json
+end
+
+def signedin_authenticate!
+	redirect "/salon/signin" if !current_salon
+end
+def employeeSignin_authenticate!
+	redirect "/employee/signin" if !current_employee
 end

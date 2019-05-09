@@ -1,0 +1,31 @@
+html,body {
+    height: 100%;
+    background-color: #212529;
+}
+
+.input_container {
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+}
+.form_holder {
+    height: 20rem;
+    width: 40rem;
+
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+}
+
+.form_holder form input {
+    padding: 2rem;
+    font-size: 60px;
+    border-width: 3px;
+}

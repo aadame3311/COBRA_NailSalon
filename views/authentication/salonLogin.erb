@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Salon Signin</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> 
+      <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+    <link href="../css/index.css" rel="stylesheet"> 
+</head>
+<body>
+    <% flash.keys.each do |type| %>
+        <div data-alert class="flash <%= type %> alert-box radius">
+            <%= flash[type] %>
+            <a href="#" class="close">&times;</a>
+        </div>
+    <% end %>
+
+
+    <div class="container input_container">
+
+        <div class="form_holder">
+            <form action="/api/login" method="get">
+                <div class="form-group salon_signin">
+                <div class="input_group">
+                    <input type="text" name="salon_passcode" class="form-control" id="InputPasscode" aria-describedby="passcodeHelp" placeholder="Salon Passcode">
+                </div>
+
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+   
+</body>
+</html>
+
